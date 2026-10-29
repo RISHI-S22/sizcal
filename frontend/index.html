@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIZCAL — AI Body Scanner</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+            <div class="brand-name">SIZCAL</div>
+            <div class="brand-subtitle">AI BODY SCANNER</div>
+        </div>
+    </div>
+    <div id="apiStatus" class="connection">Connecting...</div>
+</header>
+
+<main class="page">
+
+<section class="scanner-layout">
+
+<aside class="side-panel">
+    <div class="eyebrow">BODY MEASUREMENT</div>
+    <h1>Scan your body</h1>
+    <p class="intro">
+        Enter your height and let SIZCAL scan four views.
+        The system compares your measurements with multiple
+        brand size charts instead of forcing one global size.
+    </p>
+
+    <div class="height-card">
+        <label for="userHeight">Your Height</label>
+        <div class="category-selector">
+
+    <h3>What do you want to find your size for?</h3>
+
+    <div class="category-options">
+
+        <button
+            type="button"
+            class="category-card active"
+            id="topWearBtn"
+            data-category="top_wear"
+        >
+
+            <span class="category-icon">👕</span>
+
+            <span class="category-title">
+                Top Wear
+            </span>
+
+            <span class="category-description">
+                T-Shirts, Shirts, Tops
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="category-card"
+            id="bottomWearBtn"
+            data-category="bottom_wear"
+        >
+
+            <span class="category-icon">👖</span>
+
+            <span class="category-title">
+                Bottom Wear
+            </span>
+
+            <span class="category-description">
+                Jeans, Pants, Trousers
+            </span>
+
+        </button>
+
+    </div>
+
+    <input
+        type="hidden"
+        id="clothingCategory"
+        value="top_wear"
+    >
+
+</div>
+        <div class="height-row">
+            <input id="userHeight" type="number"
+                   min="100" max="250" step="1" value="170">
+            <span>cm</span>
+        </div>
+        <small>Used for body-scale calibration.</small>
+    </div>
+
+    <div class="steps">
+        <div id="scanStepFront" class="step active">
+            <span>01</span><div><strong>Front</strong><small>Face camera</small></div>
+        </div>
+        <div id="scanStepLeft" class="step">
+            <span>02</span><div><strong>Left</strong><small>Turn 90° left</small></div>
+        </div>
+        <div id="scanStepBack" class="step">
+            <span>03</span><div><strong>Back</strong><small>Turn around</small></div>
+        </div>
+        <div id="scanStepRight" class="step">
+            <span>04</span><div><strong>Right</strong><small>Turn 90° right</small></div>
+        </div>
+    </div>
+
+    <div class="tip">
+        <span>↕</span>
+        <div><strong>Stand about 2 meters away</strong>
+             <small>Keep your complete body visible.</small></div>
+    </div>
+
+    <div class="tip">
+        <span>✦</span>
+        <div><strong>Stay still while scanning</strong>
+             <small>The clearest frame is selected automatically.</small></div>
+    </div>
+</aside>
+
+<section class="scanner">
+
+    <div class="scanner-heading">
+        <div>
+            <div class="eyebrow">LIVE CAMERA</div>
+            <h2 id="currentPosition">FRONT VIEW</h2>
+        </div>
+        <div id="scanState" class="state">READY</div>
+    </div>
+
+    <div class="camera-card">
+        <video id="cameraVideo" autoplay muted playsinline></video>
+        <canvas id="cameraOverlay"></canvas>
+        <canvas id="cameraCanvas" hidden></canvas>
+
+        <div id="cameraCenterMessage" class="camera-message">
+            <div class="message-icon">◉</div>
+            <strong>Position yourself inside the frame</strong>
+            <span>Your scan will begin automatically</span>
+        </div>
+
+        <div class="camera-bottom-status">
+            <span class="status-dot"></span>
+            <span id="scanStatusText">Camera ready</span>
+        </div>
+        <div id="scanLine" class="scan-line"></div>
+    </div>
+
+    <div class="position-card">
+        <div>
+            <div class="eyebrow">CURRENT POSITION</div>
+            <h3 id="positionTitle">Front View</h3>
+            <p id="positionDescription">
+                Face the camera directly. Keep your entire body visible.
+            </p>
+        </div>
+
+        <div class="timer">
+            <svg width="86" height="86" viewBox="0 0 100 100">
+                <circle class="timer-bg" cx="50" cy="50" r="44"></circle>
+                <circle id="timerProgress" class="timer-progress"
+                        cx="50" cy="50" r="44"></circle>
+            </svg>
+            <strong id="timerText">7</strong>
+            <span>sec</span>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button id="startScanBtn" class="primary-btn">Start Body Scan</button>
+        <button id="stopScanBtn" class="secondary-btn" hidden>Stop Scan</button>
+    </div>
+
+    <section id="scanComplete" class="results-card" hidden>
+        <div class="eyebrow">SCAN COMPLETE</div>
+        <h2>Best size matches</h2>
+        <p class="result-note">
+            Brand recommendations are ranked using your measured body
+            dimensions against each brand's size chart.
+        </p>
+
+        <div id="recommendedSize" class="recommended-size">--</div>
+        <div class="brand-results">
+
+    <h3>
+        Relevant Brands
+    </h3>
+
+    <div
+        id="brandRecommendations"
+        class="brand-recommendations"
+    ></div>
+
+</div>
+        <div id="bestBrand" class="best-brand">--</div>
+        <div id="confidence" class="confidence">--</div>
+
+        <div id="measurements" class="measurements"></div>
+
+        <h3 class="brand-title">Relevant brands</h3>
+        <div id="brandRecommendations" class="brand-recommendations"></div>
+
+        <div class="result-actions">
+            <button id="saveMeasurementBtn" class="primary-btn">
+                Save Measurement
+            </button>
+            <button id="newScanBtn" class="secondary-btn">
+                Scan Again
+            </button>
+        </div>
+    </section>
+
+    <section class="history-card">
+        <div class="history-header">
+            <div>
+                <div class="eyebrow">HISTORY</div>
+                <h2>Previous scans</h2>
+            </div>
+            <button id="clearHistoryBtn" class="text-btn">Clear</button>
+        </div>
+        <div id="historyList" class="history-list">
+            <div class="empty-history">No saved measurements yet.</div>
+        </div>
+    </section>
+
+</section>
+</section>
+</main>
+
+<script src="/static/app.js" defer></script>
+</body>
+</html>

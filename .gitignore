@@ -1,0 +1,65 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# FastAPI / Uvicorn runtime & logs
+*.log
+logs/
+
+# Jupyter Notebook checkpoints & autosaves
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# ML / Deep Learning model artifacts & checkpoints (often too large for Git)
+*.pt
+*.pth
+*.onnx
+*.pkl
+*.pickle
+*.h5
+*.joblib
+*.bin
+models/
+checkpoints/
+
+# Datasets, local media & OpenCV / Pillow test outputs
+datasets/
+data/
+*.csv
+*.tsv
+*.zip
+*.tar.gz
+test_images/
+output/
+runs/
+
+# IDE & Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Build / packaging (if applicable)
+dist/
+build/
+*.egg-info/
